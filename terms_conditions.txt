@@ -1,0 +1,62 @@
+
+Terms and Conditions
+
+Last Updated: 15-10-2024
+
+1. Acceptance of Terms
+   By accessing or using our service, website, and related applications, you agree to be bound by these terms and conditions ("Terms"). If you do not agree with any part of these Terms, you should not access the service. Please read these Terms carefully before proceeding.
+
+2. Description of Service
+   Our service allows users to upload and analyze documents, including but not limited to terms and conditions from third-party services. The service provides summaries, explanations, and insights into uploaded documents but does not guarantee legal advice or complete accuracy in its analysis. The service is intended for informational purposes only.
+
+3. User Accounts and Responsibilities
+   - Account Creation: You may be required to create an account to access certain features of our service. You agree to provide accurate, complete, and updated information when creating your account.
+   - User Conduct: You agree not to upload, post, or otherwise transmit any content that:
+     - Violates any applicable local, state, national, or international law or regulation.
+     - Infringes the intellectual property or proprietary rights of third parties.
+     - Contains harmful or malicious content, such as viruses or malware.
+   - Account Security: You are responsible for maintaining the confidentiality of your account and password. You agree to notify us immediately of any unauthorized use of your account.
+
+4. Document Uploads and Content Use
+   - Document Processing: By uploading documents (such as terms and conditions) to our service, you grant us a limited, non-exclusive, and revocable right to process, analyze, and temporarily store these documents to provide the service to you.
+   - Retention of Content: Documents uploaded by users may be retained for a limited period solely for the purpose of processing. We will not store user content longer than necessary to provide the service.
+   - Third-Party Documents: If you upload a third-party document (such as another company's terms and conditions), you acknowledge that you have the necessary legal rights to do so. We are not responsible for any infringement claims related to the use of such documents.
+
+5. Privacy and Data Security
+   - Data Collection: We collect and store personal information such as your name, email address, and uploaded document content solely for the purpose of providing the service. Please refer to our [Privacy Policy] for more details on how we collect, use, and store your data.
+   - Confidentiality: We take the privacy of your uploaded documents seriously. The content of your documents is processed through secure systems and will not be shared with third parties, except as required by law or as part of the service's functionality.
+   - Data Security: We implement reasonable measures to protect your data, but we cannot guarantee that unauthorized access, data loss, or other breaches will not occur.
+
+6. Intellectual Property Rights
+   - Ownership of Content: All materials, software, and content provided through the service (excluding user-uploaded documents) are protected by intellectual property laws. You agree not to reproduce, distribute, or create derivative works based on our content without explicit permission.
+   - User Content: You retain ownership of any content you upload, but you grant us a license to use, process, and analyze the content solely for the purpose of providing the service.
+
+7. Limitation of Liability
+   - No Warranty: The service is provided "as-is" without any warranties, express or implied. We do not guarantee the accuracy, completeness, or reliability of the information generated from your uploaded documents.
+   - Limited Liability: To the maximum extent permitted by law, we are not liable for any direct, indirect, incidental, or consequential damages that may result from:
+     - Your use or inability to use the service.
+     - Errors or inaccuracies in document analysis.
+     - Unauthorized access to or alteration of your data.
+     - Any other issue related to the service.
+
+8. Termination of Service
+   We reserve the right to suspend or terminate your access to the service at any time for any reason, including but not limited to:
+   - Violation of these Terms.
+   - Requests by law enforcement or other government agencies.
+   - Technical or security issues.
+   Upon termination, you will no longer have access to the documents or data uploaded to the service. We may retain limited data in accordance with our Privacy Policy and applicable laws.
+
+9. Governing Law and Dispute Resolution
+   These Terms and any disputes arising from them are governed by the laws of Gujarat, India. In the event of a dispute, you agree to first attempt to resolve the issue through informal negotiation with us. If unresolved, the dispute shall be submitted to binding arbitration in accordance with the applicable arbitration rules.
+
+10. Changes to These Terms
+    We reserve the right to update or modify these Terms at any time. If changes are made, the revised version will be posted on our website, and the "Last Updated" date will be updated. It is your responsibility to review these Terms regularly. Continued use of the service after changes have been posted constitutes your acceptance of the revised Terms.
+
+11. Contact Information
+    If you have any questions or concerns regarding these Terms, please contact us at:
+
+    Email: support@legalgenie.com
+    Phone: +69 6969696969
+    Address: kali pahadi ke piche
+
+Effective Date: 15-10-2024

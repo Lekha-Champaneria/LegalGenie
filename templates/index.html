@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question Bot</title>
+</head>
+<body>
+    <h1>Ask a Question</h1>
+    <form method="POST" enctype="multipart/form-data">
+        <label for="question">Your Question:</label><br>
+        <input type="text" id="question" name="question" required><br><br>
+        
+        <label for="file">Upload a File:</label><br>
+        <input type="file" id="file" name="file"><br><br>
+        
+        <input type="submit" value="Ask">
+    </form>
+    <h2>Response:</h2>
+    <p>{{ answer|safe }}</p>
+</body>
+</html>

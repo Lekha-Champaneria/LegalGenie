@@ -5,102 +5,126 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat with LLaMA</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            color: #333;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+        /* Color Palette */
+        :root {
+            --sea-spray: #BAD6DA;
+            --baby-blue: #E1F2F4;
+            --matcha: #DDDD7B;
+            --sunshine: #FFE797;
+            --bubble-gum: #F691A9;
+            --blush: #FFDBDF;
+        }
+
+        body { 
+            font-family: Arial, sans-serif; 
+            background-color: var(--baby-blue); 
+            margin: 0; 
+            padding: 0; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            color: black; 
+        }
+        
+        .container { 
+            background-color: var(--blush); 
+            padding: 20px; 
+            border-radius: 10px; 
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); 
+            width: 100%; 
+            max-width: 600px; 
         }
 
         h1 {
-            color: #4A90E2;
+            text-align: center;
+            color: var(--bubble-gum);
         }
 
-        .container {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 600px;
+        .chat-box { 
+            border: 1px solid var(--matcha); 
+            padding: 10px; 
+            height: 300px; 
+            overflow-y: auto; 
+            background-color: var(--sea-spray); 
+            border-radius: 5px; 
+            margin-bottom: 15px; 
+            color: black;
         }
 
-        .chat-box {
-            border: 1px solid #ddd;
-            padding: 10px;
-            width: 100%;
-            height: 300px;
-            overflow-y: auto;
-            background-color: #fafafa;
-            border-radius: 5px;
-            margin-bottom: 15px;
+        .chat-box p { 
+            margin: 5px 0; 
+            padding: 10px; 
+            border-radius: 15px; 
+            color: white; 
+            display: inline-block;  /* Adjusts the box to fit content */
+            max-width: 70%; /* Maximum width of the message box */
+            word-wrap: break-word; /* Wraps the text within the box */
         }
 
-        .chat-box p {
-            margin: 5px 0;
-            padding: 8px 10px;
-            background-color: #e9effe;
-            border-radius: 15px;
-            max-width: 80%;
+        .user-message { 
+            background-color: var(--bubble-gum); 
+            text-align: right; 
+            float: right; /* Aligns user messages to the right */
+            clear: both; /* Ensures new messages start below */
         }
 
-        .chat-box p:nth-child(odd) {
-            background-color: #4A90E2;
-            color: white;
-            text-align: right;
+        .bot-message { 
+            background-color: var(--matcha); 
+            text-align: left; 
+            float: left; /* Aligns bot messages to the left */
+            clear: both; /* Ensures new messages start below */
+        }
+
+        textarea, input[type="file"], input[type="submit"], button { 
+            margin-top: 10px; 
+            width: 100%; 
+            padding: 12px; 
+            border-radius: 5px; 
+            border: none; 
+            color: black; 
+            font-size: 16px; 
+            box-sizing: border-box; 
         }
 
         textarea {
-            width: calc(100% - 22px);
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            font-size: 14px;
-            resize: none;
+            background-color: var(--blush); 
+            color: black; 
+            border: 1px solid var(--matcha); 
         }
 
-        input[type="submit"], button {
-            background-color: #4A90E2;
+        input[type="file"] { 
+            background-color: var(--matcha); 
+            color: black; 
+        }
+
+        input[type="submit"], button { 
+            background-color: var(--bubble-gum); 
+            cursor: pointer; 
             color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            margin-top: 10px;
-            margin-right: 5px;
         }
 
-        input[type="submit"]:hover, button:hover {
-            background-color: #357ABD;
-        }
-
-        button {
-            background-color: #FF6F61;
-        }
-
-        button:hover {
-            background-color: #E45A4F;
+        input[type="submit"]:hover, button:hover { 
+            background-color: var(--sunshine); 
+            color: black;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Chat with LLaMA</h1>
-        
         <div class="chat-box">
             {% for message in chat_history %}
-            <p>{{ message }}</p>
+                {% if message.startswith('You') %}
+                    <p class="user-message">{{ message }}</p>
+                {% else %}
+                    <p class="bot-message">{{ message }}</p>
+                {% endif %}
             {% endfor %}
         </div>
-        
-        <form method="POST" action="/">
+        <form method="POST" action="/" enctype="multipart/form-data">
             <textarea name="user_input" rows="4" placeholder="Type your message here..."></textarea><br>
+            <input type="file" name="uploaded_file"><br><br>
             <input type="submit" value="Send">
             <button type="submit" name="clear_chat">Clear Chat</button>
         </form>

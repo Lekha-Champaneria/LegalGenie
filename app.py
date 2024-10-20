@@ -1,80 +1,57 @@
 from flask import Flask, render_template, request
-import os
-import PyPDF2  # Library for PDF handling
-import requests  # For querying the Llama model
-from transformers import AutoTokenizer  # Import the tokenizer
+import requests
+import json
 
 app = Flask(__name__)
 
-# Create a directory for uploads if it doesn't exist
-UPLOAD_FOLDER = 'uploads'
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-
-# Load the tokenizer
-tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")  # Change this to the tokenizer you need
-
-# Function to extract text from a PDF file
-def extract_text_from_pdf(file_path):
-    text = ""
-    with open(file_path, 'rb') as file:
-        reader = PyPDF2.PdfReader(file)
-        for page in reader.pages:
-            text += page.extract_text() or ""  # Handle cases where text might not be extracted
-    return text
-
-# Function to tokenize text
-def tokenize_text(text):
-    tokens = tokenizer.encode(text, add_special_tokens=True)  # Tokenize the text
-    return tokens[:2048]  # Truncate to the first 512 tokens
-
-# Function to query the Llama model
-def query_llama_model(tokenized_content, question):
-    url = 'http://localhost:11434/api/generate'  # Ensure this is the correct endpoint
-    payload = {
-        'model': 'llama3.2:3b',  # Specify the model you want to use
-        'context': tokenized_content,  # Send the tokenized content (array of integers)
-        'question': question
-    }
-    response = requests.post(url, json=payload)
-
-    # Print the raw response for debugging
-    print("Response Status Code:", response.status_code)
-    print("Response Content:", response.text)  # Print full response content for debugging
-
-    if response.status_code == 200:
-        try:
-            return response.json().get('answer', 'No answer returned.')
-        except ValueError:
-            return 'Error: Could not decode JSON response. Response content: ' + response.text
-    else:
-        return f'Error querying the model: {response.status_code}'
+# Store the conversation history
+chat_history = []
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    answer = ""
+    global chat_history
+
+    model_response = ""  # Initialize model_response
+
     if request.method == 'POST':
-        question = request.form.get('question')
-        file = request.files.get('file')
+        if 'clear_chat' in request.form:  # Check if the clear chat button was pressed
+            chat_history = []  # Clear chat history
+            model_response = "Chat cleared."
+            return render_template('index.html', answer=model_response, chat_history=chat_history)
+
+        user_input = request.form['user_input']
+        chat_history.append(f"You: {user_input}")
+
+        # Prepare the prompt with history
+        full_prompt = "\n".join(chat_history)
+        try:
+            response = requests.post("http://localhost:11434/api/generate", json={"model": "llama3.2", "prompt": full_prompt})
+
+            # Process each line of the response separately
+            response_lines = response.content.splitlines()
+
+            for line in response_lines:
+                # Parse each line as a JSON object
+                response_data = json.loads(line.decode('utf-8'))
+                model_response_part = response_data.get("response", "")
+
+                if model_response_part:
+                    model_response += model_response_part
+
+            # Append the model's response to the chat history
+            chat_history.append(f"LLaMA: {model_response}")
         
-        if file:
-            file_path = os.path.join(UPLOAD_FOLDER, file.filename)
-            file.save(file_path)
-            answer += f"File '{file.filename}' uploaded successfully.<br>"
-            
-            # Extract text from the uploaded file
-            if file.filename.endswith('.pdf'):
-                file_content = extract_text_from_pdf(file_path)
-                # Tokenize the extracted text
-                tokenized_content = tokenize_text(file_content)
-            else:
-                answer += "Unsupported file format.<br>"
-                return render_template('index.html', answer=answer)
+        except json.decoder.JSONDecodeError as e:
+            model_response = f"Error decoding response: {str(e)}"
+            chat_history.append(f"LLaMA: {model_response}")
+        
+        except requests.exceptions.RequestException as e:
+            model_response = f"Error reaching the model: {str(e)}"
+            chat_history.append(f"LLaMA: {model_response}")
 
-            # Query the LLaMA model with the tokenized content and question
-            model_answer = query_llama_model(tokenized_content, question)
-            answer += f"Model response: {model_answer}"
+        return render_template('index.html', answer=model_response, chat_history=chat_history)
 
-    return render_template('index.html', answer=answer)
+    return render_template('index.html', answer="", chat_history=chat_history)
 
 if __name__ == '__main__':
     app.run(debug=True)

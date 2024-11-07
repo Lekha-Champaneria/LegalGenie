@@ -5,108 +5,185 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat with LLaMA</title>
     <style>
-        /* Color Palette */
         :root {
-            --sea-spray: #BAD6DA;
-            --baby-blue: #E1F2F4;
-            --matcha: #DDDD7B;
-            --sunshine: #FFE797;
-            --bubble-gum: #F691A9;
-            --blush: #FFDBDF;
+            --primary-bg: linear-gradient(135deg, #4e54c8, #8f94fb);
+            --container-bg: rgba(255, 255, 255, 0.2);
+            --user-bg: #4e54c8;
+            --bot-bg: #f3f4f6;
+            --input-bg: rgba(255, 255, 255, 0.3);
+            --border-color: rgba(255, 255, 255, 0.3);
+            --button-color: #4e54c8;
+            --button-hover: #4343c5;
+            --text-color: #fff;
         }
 
-        body { 
-            font-family: Arial, sans-serif; 
-            background-color: var(--baby-blue); 
-            margin: 0; 
-            padding: 0; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh; 
-            color: black; 
-        }
-        
-        .container { 
-            background-color: var(--blush); 
-            padding: 20px; 
-            border-radius: 10px; 
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); 
-            width: 100%; 
-            max-width: 600px; 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
         }
 
-        h1 {
+        body {
+            background: var(--primary-bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: var(--text-color);
+        }
+
+        .container {
+            background-color: var(--container-bg);
+            backdrop-filter: blur(20px);
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            border: 1px solid var(--border-color);
+        }
+
+        .container h1 {
             text-align: center;
-            color: var(--bubble-gum);
+            font-size: 1.8em;
+            color: #ffffff;
+            font-weight: 600;
+            margin-bottom: 10px;
         }
 
-        .chat-box { 
-            border: 1px solid var(--matcha); 
-            padding: 10px; 
-            height: 300px; 
-            overflow-y: auto; 
-            background-color: var(--sea-spray); 
-            border-radius: 5px; 
-            margin-bottom: 15px; 
-            color: black;
+        .chat-box {
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            height: 400px;
+            overflow-y: auto;
+            background-color: transparent;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
 
-        .chat-box p { 
-            margin: 5px 0; 
-            padding: 10px; 
-            border-radius: 15px; 
-            color: white; 
-            display: inline-block;  /* Adjusts the box to fit content */
-            max-width: 70%; /* Maximum width of the message box */
-            word-wrap: break-word; /* Wraps the text within the box */
+        .chat-box p {
+            margin: 5px 0;
+            padding: 12px 16px;
+            border-radius: 20px;
+            max-width: 70%;
+            word-wrap: break-word;
+            line-height: 1.4;
+            font-size: 0.9em;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
         }
 
-        .user-message { 
-            background-color: var(--bubble-gum); 
-            text-align: right; 
-            float: right; /* Aligns user messages to the right */
-            clear: both; /* Ensures new messages start below */
+        /* User message styling */
+        .user-message {
+            background-color: var(--user-bg);
+            color: white;
+            align-self: flex-end;
+            text-align: left;
+            border-radius: 20px 20px 0 20px;
         }
 
-        .bot-message { 
-            background-color: var(--matcha); 
-            text-align: left; 
-            float: left; /* Aligns bot messages to the left */
-            clear: both; /* Ensures new messages start below */
+        /* Bot message styling */
+        .bot-message {
+            background-color: var(--bot-bg);
+            color: #333;
+            align-self: flex-start;
+            text-align: left;
+            border-radius: 20px 20px 20px 0;
         }
 
-        textarea, input[type="file"], input[type="submit"], button { 
-            margin-top: 10px; 
-            width: 100%; 
-            padding: 12px; 
-            border-radius: 5px; 
-            border: none; 
-            color: black; 
-            font-size: 16px; 
-            box-sizing: border-box; 
+        /* Optional timestamp */
+        .timestamp {
+            font-size: 0.7em;
+            color: #ccc;
+            margin-top: 3px;
+        }
+
+        /* Form Section */
+        .form-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* File Upload Button */
+        .file-label {
+            background-color: var(--button-color);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8em;
+            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        input[type="file"] {
+            display: none;
         }
 
         textarea {
-            background-color: var(--blush); 
-            color: black; 
-            border: 1px solid var(--matcha); 
-        }
-
-        input[type="file"] { 
-            background-color: var(--matcha); 
-            color: black; 
-        }
-
-        input[type="submit"], button { 
-            background-color: var(--bubble-gum); 
-            cursor: pointer; 
+            flex-grow: 1;
+            background-color: var(--input-bg);
             color: white;
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 1em;
+            resize: none;
+            height: 45px;
+            backdrop-filter: blur(10px);
         }
 
-        input[type="submit"]:hover, button:hover { 
-            background-color: var(--sunshine); 
-            color: black;
+        /* Right-aligned buttons */
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .small-btn {
+            background-color: var(--button-color);
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 0.8em;
+            cursor: pointer;
+            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .small-btn:hover {
+            background-color: var(--button-hover);
+        }
+
+        /* Clear Button Specific */
+        .clear-btn {
+            background-color: #ff4b4b;
+        }
+
+        .clear-btn:hover {
+            background-color: #e04343;
+        }
+
+        /* Smooth Scroll */
+        .chat-box::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .chat-box::-webkit-scrollbar-thumb {
+            background-color: var(--user-bg);
+            border-radius: 10px;
         }
     </style>
 </head>
@@ -114,19 +191,29 @@
     <div class="container">
         <h1>Chat with LLaMA</h1>
         <div class="chat-box">
-            {% for message in chat_history %}
-                {% if message.startswith('You') %}
-                    <p class="user-message">{{ message }}</p>
-                {% else %}
-                    <p class="bot-message">{{ message }}</p>
-                {% endif %}
-            {% endfor %}
+            <!-- Loop for messages -->
+            <div class="user-message">
+                <p>Hey! How are you?</p>
+                <span class="timestamp">10:45 AM</span>
+            </div>
+            <div class="bot-message">
+                <p>Hello! I'm here to help you with any questions.</p>
+                <span class="timestamp">10:46 AM</span>
+            </div>
         </div>
-        <form method="POST" action="/" enctype="multipart/form-data">
-            <textarea name="user_input" rows="4" placeholder="Type your message here..."></textarea><br>
-            <input type="file" name="uploaded_file"><br><br>
-            <input type="submit" value="Send">
-            <button type="submit" name="clear_chat">Clear Chat</button>
+        <form method="POST" action="/" enctype="multipart/form-data" class="form-section">
+            <!-- Left Upload Button with Upwards Arrow Icon -->
+            <label class="file-label" for="file-upload">📤</label>
+            <input type="file" name="uploaded_file" id="file-upload">
+            
+            <!-- Text Input -->
+            <textarea name="user_input" placeholder="Type your message here..."></textarea>
+            
+            <!-- Right-aligned Buttons with Icons -->
+            <div class="button-group">
+                <button type="submit" class="small-btn">✉️ Send</button>
+                <button type="submit" name="clear_chat" class="small-btn clear-btn">🗑️ Clear</button>
+            </div>
         </form>
     </div>
 </body>

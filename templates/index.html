@@ -6,7 +6,7 @@
     <title>Chat with LLaMA</title>
     <style>
         :root {
-            --primary-bg: linear-gradient(135deg, #4e54c8, #8f94fb);
+            --primary-bg: linear-gradient(135deg, #6f76f7, #a2a6fa);
             --container-bg: rgba(255, 255, 255, 0.2);
             --user-bg: #4e54c8;
             --bot-bg: #f3f4f6;
@@ -31,6 +31,7 @@
             align-items: center;
             height: 100vh;
             color: var(--text-color);
+            margin: 0;
         }
 
         .container {
@@ -64,54 +65,43 @@
             border-radius: 12px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
         }
 
         .chat-box p {
-            margin: 5px 0;
-            padding: 12px 16px;
-            border-radius: 20px;
-            max-width: 70%;
+            margin: 4px 0;
+            padding: 10px 15px;
+            border-radius: 18px;
+            display: inline-block;
+            max-width: 75%;
             word-wrap: break-word;
             line-height: 1.4;
             font-size: 0.9em;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            position: relative;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
         }
 
-        /* User message styling */
         .user-message {
             background-color: var(--user-bg);
             color: white;
             align-self: flex-end;
-            text-align: left;
-            border-radius: 20px 20px 0 20px;
+            text-align: right;
+            border-bottom-right-radius: 4px;
         }
 
-        /* Bot message styling */
         .bot-message {
             background-color: var(--bot-bg);
             color: #333;
             align-self: flex-start;
             text-align: left;
-            border-radius: 20px 20px 20px 0;
+            border-bottom-left-radius: 4px;
         }
 
-        /* Optional timestamp */
-        .timestamp {
-            font-size: 0.7em;
-            color: #ccc;
-            margin-top: 3px;
-        }
-
-        /* Form Section */
         .form-section {
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-        /* File Upload Button */
         .file-label {
             background-color: var(--button-color);
             color: white;
@@ -142,7 +132,6 @@
             backdrop-filter: blur(10px);
         }
 
-        /* Right-aligned buttons */
         .button-group {
             display: flex;
             flex-direction: column;
@@ -167,7 +156,6 @@
             background-color: var(--button-hover);
         }
 
-        /* Clear Button Specific */
         .clear-btn {
             background-color: #ff4b4b;
         }
@@ -176,7 +164,6 @@
             background-color: #e04343;
         }
 
-        /* Smooth Scroll */
         .chat-box::-webkit-scrollbar {
             width: 5px;
         }
@@ -191,25 +178,20 @@
     <div class="container">
         <h1>Chat with LLaMA</h1>
         <div class="chat-box">
-            <!-- Loop for messages -->
-            <div class="user-message">
-                <p>Hey! How are you?</p>
-                <span class="timestamp">10:45 AM</span>
-            </div>
-            <div class="bot-message">
-                <p>Hello! I'm here to help you with any questions.</p>
-                <span class="timestamp">10:46 AM</span>
-            </div>
+            {% for message in chat_history %}
+                {% if message.startswith('You') %}
+                    <p class="user-message">{{ message }}</p>
+                {% else %}
+                    <p class="bot-message">{{ message }}</p>
+                {% endif %}
+            {% endfor %}
         </div>
         <form method="POST" action="/" enctype="multipart/form-data" class="form-section">
-            <!-- Left Upload Button with Upwards Arrow Icon -->
             <label class="file-label" for="file-upload">📤</label>
             <input type="file" name="uploaded_file" id="file-upload">
             
-            <!-- Text Input -->
             <textarea name="user_input" placeholder="Type your message here..."></textarea>
             
-            <!-- Right-aligned Buttons with Icons -->
             <div class="button-group">
                 <button type="submit" class="small-btn">✉️ Send</button>
                 <button type="submit" name="clear_chat" class="small-btn clear-btn">🗑️ Clear</button>

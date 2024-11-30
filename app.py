@@ -59,7 +59,15 @@ def index():
                 filepath = os.path.join('uploads', filename)
                 file.save(filepath)
                 uploaded_file_text = extract_text_from_file(filepath)
-                chat_history.append(f"File '{filename}' uploaded and processed.")
+
+                if not uploaded_file_text:
+                    uploaded_file_text = ""
+                    chat_history.append(f"File '{filename}' is empty. THE FILE IS EMPTY.")
+                elif not is_terms_and_conditions(uploaded_file_text):
+                    uploaded_file_text = ""
+                    chat_history.append(f"File '{filename}' does not appear to be a terms and conditions document.")
+                else:
+                    chat_history.append(f"File '{filename}' uploaded and processed.")
             else:
                 chat_history.append("Invalid file type. Please upload a PDF, DOCX, or TXT file.")
 

@@ -18,14 +18,25 @@ def allowed_file(filename):
 def extract_text_from_file(filepath):
     if filepath.endswith('.pdf'):
         reader = PdfReader(filepath)
-        return "".join([page.extract_text() for page in reader.pages])
+        text = "".join([page.extract_text() for page in reader.pages])
+        return text.strip()
     elif filepath.endswith('.docx'):
         doc = Document(filepath)
-        return "\n".join([para.text for para in doc.paragraphs])
+        text = "\n".join([para.text for para in doc.paragraphs])
+        return text.strip()
     elif filepath.endswith('.txt'):
         with open(filepath, 'r') as file:
-            return file.read()
+            text = file.read()
+            return text.strip()
     return ""
+
+def is_terms_and_conditions(content):
+    """Check if the uploaded file content is related to terms and conditions."""
+    keywords = ["terms and conditions", "agreement", "terms of service", "privacy policy"]
+    for keyword in keywords:
+        if keyword.lower() in content.lower():
+            return True
+    return False
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -40,7 +51,7 @@ def index():
             model_response = "Chat cleared."
             return render_template('index.html', answer=model_response, chat_history=chat_history)
 
-        # Handle file upload, if any
+        # Handle file upload
         if 'uploaded_file' in request.files and request.files['uploaded_file'].filename != '':
             file = request.files['uploaded_file']
             if file and allowed_file(file.filename):
@@ -53,31 +64,38 @@ def index():
                 chat_history.append("Invalid file type. Please upload a PDF, DOCX, or TXT file.")
 
         # Process user input text
-        user_input = request.form['user_input']
-        chat_history.append(f"You: {user_input}")
+        user_input = request.form['user_input'].strip()
+        if not user_input:
+            model_response = "No input provided. Please enter a query or upload a document."
+        else:
+            chat_history.append(f"You: {user_input}")
 
-        # Create full prompt, append file content if available
-        full_prompt = "\n".join(chat_history) + (f"\n\nFile content:\n{uploaded_file_text}" if uploaded_file_text else "")
-        full_prompt += """
-            Rules for Legal Genie (RAG Agent):
-            1. You are only authorized to answer questions strictly related to the legality of terms and conditions documents.
-            2. If no relevant file content is available, respond only with: "Please upload a terms and conditions document for analysis."
-            3. Answer in a concise, factual manner and avoid engaging in any conversation or questions unrelated to terms and conditions.
-            4. Ignore any questions or files not concerning terms and conditions. Do not provide any information or conversation unrelated to legality.
-            5. Your responses should be focused and only provide specific legal insights or clarifications based on the uploaded document.
-            6. Do not deviate from the topic. If uncertain, respond with: "I can only assist with terms and conditions-related queries."
-            7. Keep your respons very very very short and to the point.
-            """
+            if not uploaded_file_text:
+                model_response = "No valid terms and conditions document uploaded. Please upload a relevant document."
+            else:
+                # Create full prompt with user input and file content
+                full_prompt = f"User Query: {user_input}\n\nFile content:\n{uploaded_file_text}"
+                full_prompt += """
+                    Rules for Legal Genie (RAG Agent):
+                    1. Answer only questions related to terms and conditions documents.
+                    2. If no relevant content is available, respond: "The content provided is unrelated to terms and conditions."
+                    3. If the file is empty, respond: "THE FILE IS EMPTY."
+                    4. Provide concise, factual answers to legal questions about terms and conditions.
+                    5. Ignore unrelated queries. If uncertain, respond: "I can only assist with terms and conditions-related queries."
+                    STRICTLY NOTE TO: 
+                    - Give vanilla html response only and KEEP YOUR RESPONSE VERY SHORT.
+                """
 
+                try:
+                    # Send request to LLaMA model
+                    response = requests.post("http://localhost:11434/api/generate", json={"model": "llama3.2", "prompt": full_prompt})
+                    for line in response.content.splitlines():
+                        model_response += json.loads(line.decode('utf-8')).get("response", "")
+                except Exception as e:
+                    model_response = "Error in processing the request. Please try again."
 
-        try:
-            # Send request to LLaMA model
-            response = requests.post("http://localhost:11434/api/generate", json={"model": "llama3.2", "prompt": full_prompt})
-            for line in response.content.splitlines():
-                model_response += json.loads(line.decode('utf-8')).get("response", "")
-            chat_history.append(f"LLaMA: {model_response}")
-        except Exception as e:
-            chat_history.append(f"LLaMA: Error - {str(e)}")
+            # Append response to chat history
+            chat_history.append(f"Genie: {model_response}")
 
         return render_template('index.html', answer=model_response, chat_history=chat_history)
 

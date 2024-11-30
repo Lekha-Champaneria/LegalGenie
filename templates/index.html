@@ -6,15 +6,15 @@
     <title>Chat with LLaMA</title>
     <style>
         :root {
-            --primary-bg: linear-gradient(135deg, #6f76f7, #a2a6fa);
-            --container-bg: rgba(255, 255, 255, 0.2);
+            --primary-bg: linear-gradient(135deg, #d4d8fc, #b0b5f7);
+            --container-bg: rgba(255, 255, 255, 0.4);
             --user-bg: #4e54c8;
             --bot-bg: #f3f4f6;
-            --input-bg: rgba(255, 255, 255, 0.3);
-            --border-color: rgba(255, 255, 255, 0.3);
+            --input-bg: rgba(255, 255, 255, 0.4);
+            --border-color: rgba(255, 255, 255, 0.4);
             --button-color: #4e54c8;
-            --button-hover: #4343c5;
-            --text-color: #fff;
+            --button-hover: #3f44b5;
+            --text-color: #333;
         }
 
         * {
@@ -36,7 +36,7 @@
 
         .container {
             background-color: var(--container-bg);
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(10px);
             padding: 20px;
             border-radius: 16px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
@@ -51,7 +51,7 @@
         .container h1 {
             text-align: center;
             font-size: 1.8em;
-            color: #ffffff;
+            color: #333;
             font-weight: 600;
             margin-bottom: 10px;
         }
@@ -100,29 +100,40 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            flex-wrap: wrap;
         }
 
         .file-label {
             background-color: var(--button-color);
             color: white;
-            padding: 6px 12px;
+            padding: 8px 14px;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 0.8em;
-            transition: background 0.3s;
+            font-size: 0.9em;
             display: flex;
             align-items: center;
             justify-content: center;
+            gap: 5px;
+            transition: background 0.3s;
         }
 
         input[type="file"] {
             display: none;
         }
 
+        .file-name {
+            font-size: 0.8em;
+            color: #333;
+            font-style: italic;
+            margin-top: 5px;
+            text-align: center;
+            word-wrap: break-word;
+        }
+
         textarea {
             flex-grow: 1;
             background-color: var(--input-bg);
-            color: white;
+            color: var(--text-color);
             border: 1px solid var(--border-color);
             padding: 12px;
             border-radius: 8px;
@@ -134,7 +145,6 @@
 
         .button-group {
             display: flex;
-            flex-direction: column;
             gap: 6px;
         }
 
@@ -142,14 +152,15 @@
             background-color: var(--button-color);
             color: white;
             border: none;
-            padding: 6px 10px;
+            padding: 8px 14px;
             border-radius: 8px;
-            font-size: 0.8em;
+            font-size: 0.9em;
             cursor: pointer;
             transition: background 0.3s;
             display: flex;
             align-items: center;
             justify-content: center;
+            gap: 5px;
         }
 
         .small-btn:hover {
@@ -176,7 +187,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Chat with LLaMA</h1>
+        <h1>Legal Genie</h1>
         <div class="chat-box">
             {% for message in chat_history %}
                 {% if message.startswith('You') %}
@@ -187,16 +198,36 @@
             {% endfor %}
         </div>
         <form method="POST" action="/" enctype="multipart/form-data" class="form-section">
-            <label class="file-label" for="file-upload">📤</label>
-            <input type="file" name="uploaded_file" id="file-upload">
-            
+            <label class="file-label" for="file-upload">
+                📁 Choose File
+            </label>
+            <input type="file" name="uploaded_file" id="file-upload" onchange="displayFileName(this)">
+
+            <!-- Display selected file name here -->
+            <div id="file-name-display" class="file-name"></div>
+
             <textarea name="user_input" placeholder="Type your message here..."></textarea>
             
             <div class="button-group">
-                <button type="submit" class="small-btn">✉️ Send</button>
-                <button type="submit" name="clear_chat" class="small-btn clear-btn">🗑️ Clear</button>
+                <button type="submit" class="small-btn">
+                    ✉️ Send
+                </button>
+                <button type="submit" name="clear_chat" class="small-btn clear-btn">
+                    🗑️ Clear
+                </button>
             </div>
         </form>
     </div>
+
+    <script>
+        function displayFileName(input) {
+            const fileNameDisplay = document.getElementById('file-name-display');
+            if (input.files && input.files[0]) {
+                fileNameDisplay.textContent = "Selected file: " + input.files[0].name;
+            } else {
+                fileNameDisplay.textContent = "";
+            }
+        }
+    </script>
 </body>
 </html>
